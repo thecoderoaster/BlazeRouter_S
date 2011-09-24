@@ -5,7 +5,7 @@
 -- Create Date:    18:47:06 03/15/2011 
 -- Design Name: 	 BlazeRouter
 -- Module Name:    flow_control - fc_4 
--- Project Name: 	 BlazeRouter
+-- Project Name: 	 BlazeRouter_s
 -- Description: 	 individual flow control for one direction in
 --
 -- Dependencies: 
@@ -15,6 +15,8 @@
 --						 Revision 0.02 - Created entity outline (KM)
 --                 Revision 0.03 - Created implmentation code (KM)
 --						 Revision 0.04	- Changed implmentation (KM)
+--						 Revision 0.05 - Changed statments to line up with blazerouter_s
+--											  requirements (KM)
 -- Additional Comments: 
 --
 ----------------------------------------------------------------------------------
@@ -41,7 +43,7 @@ entity flow_control is
            fc_vcFull 		: in  	STD_LOGIC;									-- Full status flag (from VC)
 			  fc_vcData 		: out  	STD_LOGIC_VECTOR (WIDTH downto 0);	-- Data port (to VC)
            fc_rnaCtrl	 	: out  	STD_LOGIC_VECTOR (WIDTH downto 0);	-- Data port (to RNA)
-           fc_rnaCtrlStrb 	: out  	STD_LOGIC;									-- Control packet strobe (to RNA)
+           fc_pktStrb	 	: out  	STD_LOGIC;									-- Packet strobe (to RNA)
 			  fc_CTR				: out		STD_LOGIC;									-- Clear to Recieve (to neighbor)
            fc_vcEnq 			: out  	STD_LOGIC);									-- enqueue command from RNA (to VC)
 end flow_control;
@@ -53,7 +55,8 @@ architecture fc_4 of flow_control is
 
 	-- Control packet sense (for now it is assumed if LSB is high in a packet then it is of the control variety)
 	-- Its assumed that the control packet will get consumed and a new one will be created
-	alias  senseOp 	:STD_LOGIC is fc_dataIn(0);
+	-- Not required in s version of blazerouter
+	-- alias  senseOp 	:STD_LOGIC is fc_dataIn(0);
 	
 begin
 
@@ -63,9 +66,9 @@ begin
 fc_vcData <= fc_dataIn;
 fc_rnaCtrl <= fc_dataIn;
 
--- Dmux for control packet sense
-fc_rnaCtrlStrb <= fc_dStrb when (senseOp = '1') else '0';
-dStrbInd <= fc_dStrb when (senseOp = '0') else '0';
+-- packet sense
+fc_pktStrb <= fc_dStrb;
+dStrbInd <= fc_dStrb;
 
 -- Clear to recieve handler
 CTRInd <= (not fc_vcFull) and fc_CTRflg;

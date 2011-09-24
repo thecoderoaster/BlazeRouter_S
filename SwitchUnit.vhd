@@ -5,7 +5,7 @@
 -- Create Date:    13:25:16 12/20/2010  
 -- Design Name: 	 BlazeRouter
 -- Module Name:    SwitchUnit - RTL 
--- Project Name: 	 BlazeRouter
+-- Project Name: 	 BlazeRouter_s
 -- Target Devices: xc4vsx35-10ff668
 -- Tool versions:  Using ISE 10.1.03
 -- Description: 
@@ -24,6 +24,8 @@
 --						 Revision 0.03 - Added functional code (KM) (not synthed yet)
 --						 Revision 0.04 - Added additional signals (KM) (synthed)
 --						 Revision 0.05 - Added data good handler/generator (KM)
+--						 Revision 0.06 - Changed statments to line up with blazerouter_s
+--											  requirements (KM)
 -- Additional Comments: 
 --
 ----------------------------------------------------------------------------------
@@ -61,12 +63,12 @@ entity SwitchUnit is
 				sw_injctSt	: in std_logic_vector (1 downto 0);
 				
 				
-				sw_rnaCtFl	: out std_logic;										-- control packet indicator flag from injection packet
+				sw_rnaPkFl	: out std_logic;										-- Packet indicator flag from injection packet
 				sw_northOut	: out std_logic_vector (WIDTH downto 0);		-- Outgoing traffic
 				sw_eastOut	: out std_logic_vector (WIDTH downto 0);	
 				sw_southOut	: out std_logic_vector (WIDTH downto 0);
 				sw_westOut 	: out std_logic_vector (WIDTH downto 0);
-				sw_rnaCtrl  : out std_logic_vector (WIDTH downto 0);		-- Control packet to RNA
+				sw_rnaPkt   : out std_logic_vector (WIDTH downto 0);		-- Packet to RNA
 				sw_ejct		: out std_logic_vector (WIDTH downto 0);		-- To PE
 				sw_dGNorthO : out std_logic;										-- Data good signal to neighbors
 				sw_dGEastO	: out std_logic;
@@ -93,8 +95,10 @@ architecture rtl of SwitchUnit is
 	signal injctPkt	: std_logic_vector (WIDTH downto 0);
 
 	-- control sense
-	alias senseOp 		: std_logic is sw_injct(0);
-	alias rnaSens		: std_logic is sw_ctrlPkt(0);
+	-- alias senseOp 		: std_logic is sw_injct(0);
+	
+	-- We always assume the arbiter creates control packets only
+		alias rnaSens		: std_logic is sw_ctrlPkt(0);
 	
 begin
 	
@@ -106,19 +110,16 @@ begin
 	-- injection = 5
 	-- control = 7	
 	
-	-- Control packet sense
-	sw_rnaCtFl <= senseOp;
-	
 	-- Dmux for injection (injctPkt, rna)
-	sw_rnaCtrl <= sw_injct when (senseOp = '1') else (others => '0');
-	injctPkt <= sw_injct when (senseOp = '0') else (others => '0');
+	sw_rnaPkt <= sw_injct;
+	injctPkt <= sw_injct;
 	
 	-- north switch (mux e, s, w, in, rna)
 	sw_northOut <= sw_eastIn when(sw_northSel = "001") else
 						sw_southIn when(sw_northSel = "010") else
 						sw_westIn when(sw_northSel = "011") else
 						injctPkt when(sw_northSel = "101") else
-						sw_ctrlPkt when(sw_northSel = "111") else
+						sw_ctrlPkt when(sw_northSel = "111") else -- this direction is ctrl packets from rna
 						(others => '0');
 	
 	-- east switch (mux s, w, n, in, rna)
@@ -173,6 +174,9 @@ begin
 	-- normal rules from general case apply.
 	dataGI <= '1' when (sw_injctSt = "00" or sw_injctSt = "10") else '0'; -- injection data good generator
 	dataGA <= '1' when (rnaSens = '1') else '0'; -- Arbiter data good generator 
+	
+	-- packet sense indicator for arbiter
+	 sw_rnaPkFl <= dataGI;
 	
 	-- data good output control
 	process (Clk)

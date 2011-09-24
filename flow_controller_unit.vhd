@@ -5,7 +5,7 @@
 -- Create Date:    18:09:00 03/22/2011 
 -- Design Name: 	 BlazeRouter
 -- Module Name:    fcu - fcu_4 
--- Project Name: 	 BlazeRouter
+-- Project Name: 	 BlazeRouter_s
 -- Description: 	 Flow controller top level unit (contains 4 flow controllers)
 --
 -- Dependencies: 
@@ -14,6 +14,8 @@
 -- 					 Revision 0.01 - File Created
 --						 Revision 0.02 - Created entity outline (KM)
 --                 Revision 0.03 - Created implmentation code (KM)
+--						 Revision 0.04 - Changed statments to line up with blazerouter_s
+--											  requirements (KM)
 -- Additional Comments: 
 --
 ----------------------------------------------------------------------------------
@@ -43,7 +45,7 @@ entity fcu is
 			n_vcFull 		: in  	STD_LOGIC;									-- Full status flag (from VC)
 			n_vcData 		: out  	STD_LOGIC_VECTOR (WIDTH downto 0);	-- Data port (to VC)
 			n_rnaCtrl	 	: out  	STD_LOGIC_VECTOR (WIDTH downto 0);	-- Data port (to RNA)
-			n_rnaCtrlStrb 	: out  	STD_LOGIC;									-- Control packet strobe (to RNA)
+			n_pktStrb 		: out  	STD_LOGIC;									-- Control packet strobe (to RNA)
 			n_CTR				: out		STD_LOGIC;									-- Clear to Recieve (to neighbor)
 			n_vcEnq 			: out  	STD_LOGIC;									-- enqueue command from RNA (to VC)
 			
@@ -53,7 +55,7 @@ entity fcu is
 			e_vcFull 		: in  	STD_LOGIC;									-- Full status flag (from VC)
 			e_vcData 		: out  	STD_LOGIC_VECTOR (WIDTH downto 0);	-- Data port (to VC)
 			e_rnaCtrl	 	: out  	STD_LOGIC_VECTOR (WIDTH downto 0);	-- Data port (to RNA)
-			e_rnaCtrlStrb 	: out  	STD_LOGIC;									-- Control packet strobe (to RNA)
+			e_pktStrb 		: out  	STD_LOGIC;									-- Control packet strobe (to RNA)
 			e_CTR				: out		STD_LOGIC;									-- Clear to Recieve (to neighbor)
 			e_vcEnq 			: out  	STD_LOGIC;									-- enqueue command from RNA (to VC)
 			
@@ -63,7 +65,7 @@ entity fcu is
 			s_vcFull 		: in  	STD_LOGIC;									-- Full status flag (from VC)
 			s_vcData 		: out  	STD_LOGIC_VECTOR (WIDTH downto 0);	-- Data port (to VC)
 			s_rnaCtrl	 	: out  	STD_LOGIC_VECTOR (WIDTH downto 0);	-- Data port (to RNA)
-			s_rnaCtrlStrb 	: out  	STD_LOGIC;									-- Control packet strobe (to RNA)
+			s_pktStrb 		: out  	STD_LOGIC;									-- Control packet strobe (to RNA)
 			s_CTR				: out		STD_LOGIC;									-- Clear to Recieve (to neighbor)
 			s_vcEnq 			: out  	STD_LOGIC;									-- enqueue command from RNA (to VC)
 			
@@ -73,7 +75,7 @@ entity fcu is
 			w_vcFull 		: in  	STD_LOGIC;									-- Full status flag (from VC)
 			w_vcData 		: out  	STD_LOGIC_VECTOR (WIDTH downto 0);	-- Data port (to VC)
 			w_rnaCtrl	 	: out  	STD_LOGIC_VECTOR (WIDTH downto 0);	-- Data port (to RNA)
-			w_rnaCtrlStrb 	: out  	STD_LOGIC;									-- Control packet strobe (to RNA)
+			w_pktStrb 		: out  	STD_LOGIC;									-- Control packet strobe (to RNA)
 			w_CTR				: out		STD_LOGIC;									-- Clear to Recieve (to neighbor)
 			w_vcEnq 			: out  	STD_LOGIC);									-- enqueue command from RNA (to VC)
 end fcu;
@@ -88,7 +90,7 @@ architecture fcu_4 of fcu is
 				  fc_vcFull 		: in  	STD_LOGIC;									-- Full status flag (from VC)
 				  fc_vcData 		: out  	STD_LOGIC_VECTOR (WIDTH downto 0);	-- Data port (to VC)
 				  fc_rnaCtrl	 	: out  	STD_LOGIC_VECTOR (WIDTH downto 0);	-- Data port (to RNA)
-				  fc_rnaCtrlStrb 	: out  	STD_LOGIC;									-- Control packet strobe (to RNA)
+				  fc_pktStrb 		: out  	STD_LOGIC;									-- Control packet strobe (to RNA)
 				  fc_CTR				: out		STD_LOGIC;									-- Clear to Recieve (to neighbor)
 				  fc_vcEnq 			: out  	STD_LOGIC);									-- enqueue command from RNA (to VC)
 	end component;
@@ -101,7 +103,7 @@ begin
 												n_vcFull,
 												n_vcData,
 												n_rnaCtrl,
-												n_rnaCtrlStrb,
+												n_pktStrb,
 												n_CTR,		
 												n_vcEnq);
 
@@ -111,7 +113,7 @@ begin
 												e_vcFull,
 												e_vcData,
 												e_rnaCtrl,
-												e_rnaCtrlStrb,
+												e_pktStrb,
 												e_CTR,		
 												e_vcEnq);
 
@@ -121,7 +123,7 @@ begin
 												s_vcFull,
 												s_vcData,
 												s_rnaCtrl,
-												s_rnaCtrlStrb,
+												s_pktStrb,
 												s_CTR,		
 												s_vcEnq);
 
@@ -131,7 +133,7 @@ begin
 												w_vcFull,
 												w_vcData,
 												w_rnaCtrl,
-												w_rnaCtrlStrb,
+												w_pktStrb,
 												w_CTR,		
 												w_vcEnq);
 												
